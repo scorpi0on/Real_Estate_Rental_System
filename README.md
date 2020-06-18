@@ -16,6 +16,18 @@ a [Sails v1](https://sailsjs.com) application
 
 This app was originally generated on Fri Oct 11 2019 00:36:56 GMT+0800 (Hong Kong Standard Time) using Sails v1.2.3.
 
+### Why
+A JavaScript runtime environment + Over 700k reusable packages/modules
+
+- Sails.js
+  - is designed to resemble the MVC architecture
+from frameworks like Ruby on Rails.
+  - is built on Node.js, uses Express for handling HTTP requests.
+  - bundles a powerful ORM, Waterline, which provides a simple data access layer that just works, no matter what database you use.
+
+- Sails MVC
+  - ![img](Image/SailsMVC.png)
+
 ### Startup 
 Normal way:
 ```
