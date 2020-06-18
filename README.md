@@ -104,6 +104,7 @@ sails lift
 ![image](/Image/AdminPage.png)
 
 ### What need to do next
+- Mobile App with NativeScript-Vue
 
 
 <!-- Internally, Sails used [`sails-generate@1.16.13`](https://github.com/balderdashy/sails-generate/tree/v1.16.13/lib/core-generators/new). -->
