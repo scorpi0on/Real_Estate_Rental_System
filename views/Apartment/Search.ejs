@@ -1,0 +1,157 @@
+<body onload="pageLoaded()">
+
+    <div class="container">
+
+        <div class="form-row">
+
+            <% Apartment.forEach( function(model) { %>
+            <div class="card col-md-4 shadow-sm" style="padding: 5px;margin: 1px;">
+                <img class="img" style="margin: 0 auto; object-fit:cover" height="200" width="300"
+                    src="<%=model.Image_URL%>" />
+                <div class="card-title">
+                    <h5><a href="/Apartment/Detail/<%= model.id%>"><%= model.Property_Title%></a>
+                    </h5>
+                </div>
+                <div class="form-row-fluid">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td><strong>Estate:</strong><%= model.Estate%></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gross Area:</strong><%= model.Gross_Area%></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rent:</strong> $<%= model.Rent%></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <% }); %>
+
+
+
+            <% const current = parseInt(req.query.page) || 1; %> <div class="col-md-3" style="padding: 5px;">
+                <div col-xs-12 col-sm-12 col-lg-4>
+                    <form class=" form-group-fluid" name="SearchForm" method="GET">
+                        <fieldset class=" form-group">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <a class="page-link" id="page-link-1" href="">Previous</a>
+                                    </li>
+                                    <% for (i = 1; i <= count; i++) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" id="<%=i%>" href=""><%=i%></a>
+                                    </li>
+                                    <% } %>
+
+                                    <li class="page-item">
+                                        <a class="page-link" id="page-link+1" href="">Next</a>
+                                    </li>
+                                    <input type="text" id="HiddenCount" style="display: none;" value="<%=count%>">
+                                </ul>
+                            </nav>
+
+
+                            <h2>Property Search</h2>
+
+
+                            <div class="form-row" id="div01">
+                                <input type="number" style="display: none;" name="page" id="page">
+                                <label class=" col-sm-3  col-form-label">Estate:</label>
+                                <select select class="form-control col-sm-9" id="Estate" name="Estate">
+                                    <option selected value=''>--Please select your estate--</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row" id="div02">
+                                <label class=" col-sm-4 col-form-label" for="Bedrooms">Bedrooms:</label>
+                                <input class="form-control col-sm-8" type="number" id="Bedrooms" name="Bedrooms" min=0>
+                            </div>
+
+                            <div class="form-row" id="div02">
+                                <label class=" col-sm-12 col-form-label">Area(Sq feet):</label>
+                                <label class=" col-sm-2 col-form-label" for="MinGross_Area">Min:</label>
+                                <input class="form-control col-sm-4" type="number" id="MinGross_Area"
+                                    name="MinGross_Area" min=0 max=2000 value=0>
+                                <label class=" col-sm-2 col-form-label" for="MaxGross_Area">Max:</label>
+                                <input class="form-control col-sm-4" type="number" id="MaxGross_Area"
+                                    name="MaxGross_Area" min=0 value=2000>
+                            </div>
+
+                            <div class="form-row" id="div02">
+                                <label class=" col-sm-12 col-form-label">Rent(HK$):</label>
+                                <label class=" col-sm-2 col-form-label" for="MinRent">Min:</label>
+                                <input class="form-control  col-sm-4" type="number" id="MinRent" name="MinRent" min=0
+                                    value=0>
+                                <label class=" col-sm-2 col-form-label" for="MaxRent">Max:</label>
+                                <input class="form-control  col-sm-4" type="number" id="MaxRent" name="MaxRent" min=0
+                                    value=30000>
+                            </div>
+                            <br>
+                            <div class="form-row-fluid">
+                                <button type="button" class="btn btn-primary  btn-block" onclick="SearchSubmit()"
+                                    value="Submit">Search</button>
+                            </div>
+                        </fieldset>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            function pageLoaded() {
+                Chendiv01();
+                TagActived();
+                AcquireURL();
+            };
+
+            function Chendiv01() {
+                var estate = ["Festival City", "Tin Ma Court", "City One Shatin"];
+                var estateSelect = document.getElementById("Estate");
+                estate.forEach(function (item) {
+                    var option = document.createElement("option");
+                    option.text = item;
+                    option.value = item;
+                    estateSelect.add(option);
+                });
+            }
+
+            function TagActived() {
+                var element = document.getElementById("Search");
+                element.classList.add("active");
+            };
+
+            function SearchSubmit() {
+                document.getElementById("page").value = "0"
+                document.SearchForm.action = "/Apartment/Search/?";
+                document.SearchForm.submit();
+            }
+
+            function AcquireURL() {
+                var qpage = "";
+                qpage = getQueryString("page");
+                var query = window.location.search.substring(8);
+                const current = parseInt(qpage) || 1;
+                var count = document.getElementById("HiddenCount").value
+                document.getElementById("page-link-1").href = "/Apartment/Search/?page=" + Math.max(current - 1, 1) + "&" + query;
+                for (i = 1; i <= count; i++) {
+                    document.getElementById(i).href = "/Apartment/Search/?page=" + i + "&" + query;
+                }
+                document.getElementById("page-link+1").href = "/Apartment/Search/?page=" + Math.max(current + 1, 1) + "&" + query;
+            };
+
+            function getQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                //window.location.search 用以获取请求的参数，即url中"?"后面的部分
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null)
+                    return unescape(r[2]);
+                return "";
+            };
+        </script>
+
+</body>

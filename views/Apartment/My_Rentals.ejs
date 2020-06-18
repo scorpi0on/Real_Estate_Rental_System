@@ -1,0 +1,73 @@
+<body onload="pageLoaded()">
+    <div class="container">
+        <div class="row">
+
+            <% Apartment.forEach( function(model) { %>
+            <div class="card shadow-sm col-md-6">
+                <h3>
+                    <a href="/Apartment/Detail/<%= model.id%>">
+                        <%= model.Property_Title %>
+                    </a>
+                </h3>
+                <div class="row">
+                    <div class="xcol-xs-6 col-sm-6 col-lg-6">
+                        <img class="img" style="margin: auto; object-fit:cover" height="150" width="220" alt="
+                            Bootstrap Image Preview" src="<%= model.Image_URL%>" />
+                    </div>
+                    <div class="ccol-xs-6 col-sm-6 col-lg-6">
+                        <table class="table table-bordered">
+
+                            <tr>
+                                <td><strong>Estate:</strong><%= model.Estate%></td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Gross Area:</strong><%= model.Gross_Area%></td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Rent:</strong> $<%= model.Rent%></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <botton type="botton" class="btn btn-danger  btn-block"
+                                        onclick="nco_rent('<%= model.id %>','<%= req.cookies.id %>')">Cancel Rental
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <% }); %>
+
+        </div>
+
+        <script>
+            function pageLoaded() {
+                TagActived();
+            }
+
+            function TagActived() {
+                var element = document.getElementById("My_Rentals");
+                element.classList.add("active");
+            };
+
+            async function nco_rent(qid, quid) {
+                console.log(qid, quid);
+                var response = await fetch(
+                    action = '/user/' + quid + '/rents/remove/' + qid, {
+                    method: "GET",
+                    credentials: 'same-origin',
+                }
+                );
+                if (response.ok) {
+                    var data = await response.json();
+                    alert(data.message);
+                    window.location = "";
+                } else {
+                    alert(response.status + ": " + response.statusText);
+                }
+            }
+        </script>
+</body>

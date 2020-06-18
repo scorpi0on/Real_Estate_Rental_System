@@ -1,0 +1,77 @@
+<!--Admin.ejs-->
+
+<body onload="pageLoaded()">
+
+    <div class="container">
+
+        <table class="table">
+            <th>No.</th>
+            <th>Property Title</th>
+            <th>Estate</th>
+            <th>Occupants</th>
+            <th>Link</th>
+            <th>Delete Apartment</th>
+
+
+            <% Apartment.forEach( function(model) { %>
+            <tr>
+                <td><%= model.id %></td>
+                <td><%= model.Property_Title %></td>
+                <td><%= model.Estate%></td>
+                <td><a href="/Apartment/<%=model.id%>/rentedBy" name="<%= model.Property_Title %>" id="<%= model.Expected_Tenants%>"
+                        onclick="ShowOccupants(this);return false;">Occupants</a>
+                </td>
+                <td><a href="/Apartment/Update/<%= model.id %>" target="_blank">Edit</a></td>
+                <td> <button type="button" class="btn btn-danger  btn-block"
+                        onclick="DeleteApartment('<%= model.id %>')">Delete</button>
+                </td>
+            </tr>
+            <% }); %>
+        </table>
+
+    </div>
+
+    <script>
+        function pageLoaded() {
+        }
+
+        async function ShowOccupants(elem) {
+            var response = await fetch(
+                action = elem.href, {
+                method: "GET",
+                credentials: 'same-origin',
+            });
+            if (response.ok) {
+                var total = elem.id;
+                var n = elem.name;
+                var data = await response.json();
+                alert(n+": "+data.message+" of "+total+" people");
+            } else {
+                alert(response.status + ": " + response.statusText);
+            };
+        };
+
+        async function DeleteApartment(id) {
+            var r = confirm("Confirm Delete?");
+
+            if (r) {
+
+                var response = await fetch("/Apartment/" + id, {
+                    method: "DELETE",
+                    credentials: 'same-origin',
+                });
+
+                if (response.ok) {
+                    var data = await response.json();
+                    alert(data.message);
+                    window.location = "";
+                } else {
+                    alert(response.status + ": " + response.statusText);
+                }
+
+            } else {
+                alert("cancelled");
+            }
+        };
+    </script>
+</body>

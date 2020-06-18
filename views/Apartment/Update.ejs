@@ -1,0 +1,166 @@
+<!--Update.ejs-->
+
+<body onload="pageLoaded()">
+
+    <div class="container">
+
+        <form class="form-group" name="EditedForm" method="POST" action="">
+
+            <fieldset>
+                <legend>
+                    <h1>Property Create Form</h1>
+                </legend>
+
+                <div class="form-row">
+
+
+                    <div class="form-group col-xl-6" id="div01">
+                        <label for="Property Title">Property Title:</label>
+                        <br>
+                        <input class="form-control" type="text" id="Property Title" name="Apartment[Property_Title]"
+                            value="<%= Apartment.Property_Title%>" required>
+                    </div>
+
+                    <div class="form-group col-xl-6" id="div02">
+                        <label for="Image URL">Image URL:</label>
+                        <br>
+                        <input class="form-control" type="url" id="Image URL" name="Apartment[Image_URL]"
+                            value="<%= Apartment.Image_URL%>" required>
+                    </div>
+
+                    <div class="form-group col-xl-6" id="div03">
+                        <span>Estate:</span>
+                        <br>
+                        <select class="form-control" id="Estate" name="Apartment[Estate]" value="<%= Apartment.Estate%>"
+                            required>
+                            <option selected><%= Apartment.Estate%></option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group col-xl-6" id="div04">
+                        <label for="Bedrooms">Bedrooms:</label>
+                        <br>
+                        <input class="form-control" type="number" id="Bedrooms" name="Apartment[Bedrooms]"
+                            value="<%= Apartment.Bedrooms%>" min=1 required>
+                    </div>
+
+                    <div class="form-group col-xl-6" id="div05">
+                        <label for="Gross Area">Gross Area:</label>
+                        <br>
+                        <input class="form-control" type="number" id="Gross Area" name="Apartment[Gross_Area]"
+                            value="<%= Apartment.Gross_Area%>" min=0 required>
+
+                    </div>
+
+                    <div class="form-group col-xl-6" id="div06">
+                        <label for="Expected Tenants">Expected Tenants:</label>
+                        <br>
+                        <input class="form-control" type="number" id="Expected Tenants"
+                            name="Apartment[Expected_Tenants]" value="<%= Apartment.Expected_Tenants%>" min=0 required>
+                    </div>
+
+                    <div class="form-group col-xl-6" id="div07">
+                        <label for="Rent">Rent:</label>
+                        <br>
+                        <input class="form-control" type="number" id="Rent" name="Apartment[Rent]"
+                            value="<%= Apartment.Rent%>" min=0 required>
+                    </div>
+
+                    <div class="form-group col-xl-6" id="div08">
+                        <input type="checkbox" id="Highlighted Property" name="Apartment[Highlighted_Property]"
+                            <%= Apartment.Highlighted_Property%> value="checked">
+                        <label class="form-check-label" for="Highlighted Property">Highlighted Property</label>
+                        <br>
+                        <br>
+                        <input type="text" style="display: none;" id="UpdatedDate" name="Apartment[UpdatedDate]" />
+                        <button type="button" class="btn btn-primary  btn-block"
+                            onclick="UpdateApartment()">Update</button>
+                        <br>
+                        <button type="button" class="btn btn-danger  btn-block"
+                            onclick="DeleteApartment('<%= Apartment.id %>')">Delete</button>
+                    </div>
+
+                </div>
+            </fieldset>
+
+        </form>
+
+    </div>
+
+    <script>
+        function pageLoaded() {
+            Chendiv03();
+            TagActived();
+
+        };
+
+        //How to be more niubility?
+        function Chendiv03() {
+            //Array consists of estates
+            var estate = ["Festival City", "Tin Ma Court", "City One Shatin"];
+            var estateSelect = document.getElementById("Estate");
+            //estateSelect.options.length = 0;
+            estate.forEach(function (item) {
+                var itemSelected = document.getElementById("Estate").value
+                if (item !== itemSelected) {
+                    var option = document.createElement("option");
+                    option.text = item;
+                    option.value = item;
+                    estateSelect.add(option);
+                }
+            })
+
+        };
+
+        function UpdateApartment() {
+            var d = new Date();
+            var year = d.getFullYear();
+            var month = d.getMonth() + 1;
+            var date = d.getDate();
+            var time = month + "/" + date + "/" + year;
+            document.getElementById("UpdatedDate").setAttribute("value", time);
+
+            var r = document.getElementById("Highlighted Property").checked
+            if (r == false) {
+                document.getElementById("Highlighted Property").checked = "true";
+                document.getElementById("Highlighted Property").value = "";
+            }
+
+            document.EditedForm.action = "/Apartment/Update/<%= Apartment.id %>";
+            document.EditedForm.submit();
+            submitForm();
+        };
+
+        async function DeleteApartment(id) {
+            var r = confirm("Confirm Delete?");
+
+            if (r) {
+
+                var response = await fetch("/Apartment/" + id, {
+                    method: "DELETE",
+                    credentials: 'same-origin',
+                });
+
+                if (response.ok) {
+                    var data = await response.json();
+                    alert(data.message);
+                    window.location = data.url;
+                } else {
+                    alert(response.status + ": " + response.statusText);
+                }
+
+            } else {
+                alert("cancelled");
+            }
+        };
+
+        function TagActived() {
+            var element = document.getElementById("Admin");
+            element.classList.add("active");
+        };
+
+
+    </script>
+
+</body>
